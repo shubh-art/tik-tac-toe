@@ -50,6 +50,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   freezed_annotation: ^3.1.0
   build_runner: ^2.8.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -101,3 +102,10 @@ flutter_native_splash:
   android_gravity: center
   ios_content_mode: scaleAspectFit
 #  preserve: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/tic-tac-toe.png"   # your logo
+  adaptive_icon_background: "#000000"    # background for Android adaptive icon
+  adaptive_icon_foreground: "assets/tic-tac-toe.png"
