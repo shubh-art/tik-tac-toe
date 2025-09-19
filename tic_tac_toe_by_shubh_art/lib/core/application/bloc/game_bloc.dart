@@ -19,40 +19,53 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     final currentState = state;
 
     if (currentState is Initial || currentState is Swapping) {
+      // Clone moves
       final player1 = List<int>.from(currentState.store.player1);
       final player2 = List<int>.from(currentState.store.player2);
       final isPlayer1 = currentState.store.isPlayer1;
 
-      // assign move
+      // Ignore if already filled
+      if (player1.contains(event.index) || player2.contains(event.index)) return;
+
+      // Assign move
       if (isPlayer1) {
-        if (player1.contains(event.index) || player2.contains(event.index)) return;
         player1.add(event.index);
       } else {
-        if (player1.contains(event.index) || player2.contains(event.index)) return;
         player2.add(event.index);
       }
 
-      // check winner
+      // Check winner
       final winnerLine = _checkWinner(isPlayer1 ? player1 : player2);
       if (winnerLine != null) {
-        final store = state.store.copyWith(winner: isPlayer1 ? 1 : 2);
-        emit(GameState.winner(
-          store: store
-        ));
+        final store = currentState.store.copyWith(
+          player1: player1,
+          player2: player2,
+          winner: isPlayer1 ? 1 : 2,
+        );
+        emit(GameState.winner(store: store));
         return;
       }
 
-      // check draw
+      // Check draw
       if (player1.length + player2.length == 9) {
-        emit(GameState.draw(store: state.store));
+        final store = currentState.store.copyWith(
+          player1: player1,
+          player2: player2,
+        );
+        emit(GameState.draw(store: store));
         return;
       }
 
-      // otherwise continue game
-      final store = state.store.copyWith(isPlayer1: !state.store.isPlayer1);
+      // Otherwise continue
+      final store = currentState.store.copyWith(
+        player1: player1,
+        player2: player2,
+        isPlayer1: !isPlayer1,
+      );
       emit(GameState.swapping(store: store));
     }
   }
+
 
   void _onReset(_Reset event, Emitter<GameState> emit) {
     emit(const GameState.initial(store: GameStateStore()));
